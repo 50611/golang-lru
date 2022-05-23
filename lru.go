@@ -35,7 +35,7 @@ func (c *Cache) GetOrAdd(key interface{}, create func(key interface{}) interface
 		//no find add must false
 		val := create(key)
 		c.lru.Add(key, val)
-		return false, value
+		return false, val
 	}
 }
 
