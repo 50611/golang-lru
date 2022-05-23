@@ -24,6 +24,21 @@ func New(size int) (*Cache, error) {
 	return NewWithEvict(size, nil)
 }
 
+// GetOrAdd is ContainsOrAdd diffent .this is can callback and return
+func (c *Cache) GetOrAdd(key interface{}, create func(key interface{}) interface{}) (bool, interface{}) {
+	c.lock.Lock()
+	defer c.lock.Unlock()
+	if value, ok := c.lru.Get(key); ok {
+		//find
+		return true, value
+	} else {
+		//no find add must false
+		val := create(key)
+		c.lru.Add(key, val)
+		return false, value
+	}
+}
+
 // NewWithEvict constructs a fixed size cache with the given eviction
 // callback.
 func NewWithEvict(size int, onEvicted func(key, value interface{})) (c *Cache, err error) {
