@@ -244,3 +244,7 @@ func (c *Cache) Len() int {
 	c.lock.RUnlock()
 	return length
 }
+
+func (c *Cache) Size() int {
+	return c.lru.Size()
+}

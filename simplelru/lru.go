@@ -68,6 +68,9 @@ func (c *LRU) Add(key, value interface{}) (evicted bool) {
 	}
 	return evict
 }
+func (c *LRU) Size() int {
+	return c.size
+}
 
 // Get looks up a key's value from the cache.
 func (c *LRU) Get(key interface{}) (value interface{}, ok bool) {
