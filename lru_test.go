@@ -252,6 +252,17 @@ func TestLRUPeek(t *testing.T) {
 		t.Errorf("should not have updated recent-ness of 1")
 	}
 }
+func TestLRUClear(t *testing.T) {
+	c, _ := New(100)
+	c.Add(1, 1)
+	c.Add(2, 3)
+	t.Log(c.Get(2))
+	c.Clear(100, nil)
+	c.Add(3, 1)
+	t.Log(c.Len())
+	t.Log(c.Get(2))
+	t.Log(c.Get(3))
+}
 
 // test that Resize can upsize and downsize
 func TestLRUResize(t *testing.T) {

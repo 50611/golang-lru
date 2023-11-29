@@ -65,6 +65,18 @@ func (c *Cache) onEvicted(k, v interface{}) {
 	c.evictedKeys = append(c.evictedKeys, k)
 	c.evictedVals = append(c.evictedVals, v)
 }
+func (c *Cache) Clear(size int, onEvicted func(key, value interface{})) (err error) {
+	c.lock.Lock()
+	defer c.lock.Unlock()
+	c.onEvictedCB = onEvicted
+
+	if onEvicted != nil {
+		c.initEvictBuffers()
+		onEvicted = c.onEvicted
+	}
+	c.lru, err = simplelru.NewLRU(size, onEvicted)
+	return
+}
 
 // Purge is used to completely clear the cache.
 func (c *Cache) Purge() {
