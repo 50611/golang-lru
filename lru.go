@@ -48,6 +48,38 @@ func (c *Cache[K, V]) initEvictBuffers() {
 	c.evictedVals = make([]V, 0, DefaultEvictedBufferSize)
 }
 
+func (c *Cache[K, V]) Clear(size int, onEvicted func(k K, v V)) (err error) {
+	c.lock.Lock()
+	defer c.lock.Unlock()
+	c.onEvictedCB = onEvicted
+
+	if onEvicted != nil {
+		c.initEvictBuffers()
+		onEvicted = c.onEvicted
+	}
+	c.lru, err = simplelru.NewLRU(size, onEvicted)
+	return
+}
+func (c *Cache[K, V]) Size() int {
+	c.lock.Lock()
+	defer c.lock.Unlock()
+	return c.lru.Len()
+}
+
+func (c *Cache[K, V]) GetOrAdd(key K, create func(k K) V) (bool, V) {
+	c.lock.Lock()
+	defer c.lock.Unlock()
+	if value, ok := c.lru.Get(key); ok {
+		//find
+		return true, value
+	} else {
+		//no find add must false
+		val := create(key)
+		c.lru.Add(key, val)
+		return false, value
+	}
+}
+
 // onEvicted save evicted key/val and sent in externally registered callback
 // outside of critical section
 func (c *Cache[K, V]) onEvicted(k K, v V) {

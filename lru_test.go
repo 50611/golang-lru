@@ -239,6 +239,26 @@ func TestLRUPeekOrAdd(t *testing.T) {
 		t.Errorf("now 1 should be contained")
 	}
 }
+func TestLGetOrAdd(t *testing.T) {
+	l, err := New[int, int](2)
+	if err != nil {
+		t.Fatalf("err: %v", err)
+	}
+	b, i := l.GetOrAdd(1, func(k int) int {
+		return 100
+	})
+	if b {
+		t.Log(i)
+	}
+	t.Logf("size=%d", l.Len())
+	b, i = l.GetOrAdd(1, func(k int) int {
+		return 100
+	})
+	if b {
+		t.Log(i)
+	}
+	t.Logf("size=%d", l.Len())
+}
 
 // test that Peek doesn't update recent-ness
 func TestLRUPeek(t *testing.T) {
