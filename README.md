@@ -1,3 +1,8 @@
+git tag -d v2.0.7              # 删除旧的（如果存在）
+git tag v2.0.7
+git push origin --tags --force
+
+
 golang-lru
 ==========
 

@@ -6,14 +6,13 @@ package expirable
 import (
 	"crypto/rand"
 	"fmt"
+	"github.com/50611/golang-lru/v2/simplelru"
 	"math"
 	"math/big"
 	"reflect"
 	"sync"
 	"testing"
 	"time"
-
-	"github.com/hashicorp/golang-lru/v2/simplelru"
 )
 
 func BenchmarkLRU_Rand_NoExpire(b *testing.B) {
